@@ -84,7 +84,7 @@ class QuestionView extends Component {
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/questions/search`, //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -158,6 +158,7 @@ class QuestionView extends Component {
         </div>
         <div className='questions-list'>
           <h2>Questions</h2>
+          {this.state.questions.length === 0 && <p>No match found</p>}
           {this.state.questions.map((q, ind) => (
             <Question
               key={q.id}
