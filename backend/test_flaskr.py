@@ -76,7 +76,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
         self.assertTrue(data["total_questions"])
-        self.assertEqual(len(data["questions"]), 1)
+        self.assertEqual(len(data["questions"]), 2)
 
     def test_get_searched_questions_without_results(self):
         res = self.client().post("/questions/search",
@@ -89,14 +89,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data["questions"]), 0)
 
     def test_delete_question(self):
-        res = self.client().delete("/questions/2")
+        res = self.client().delete("/questions/12")
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 2).one_or_none()
+        question = Question.query.filter(Question.id == 12).one_or_none()
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
-        self.assertEqual(data["deleted"], 2)
+        self.assertEqual(data["deleted"], 12)
         self.assertTrue(data["total_questions"])
         self.assertTrue(len(data["questions"]))
         self.assertEqual(question, None)
@@ -136,6 +136,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["questions"]))
         self.assertTrue(data["total_questions"])
         self.assertTrue(data["current_category"])
+
+    def test_404_if_invalid_category_id_is_used_to_get_questions(self):
+        res = self.client().get('/categories/200/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data["success"], False)
+        self.assertEqual(data["message"], 'resource not found')
 
     def test_get_questions_to_play_by_category(self):
         res = self.client().post('/quizzes', json={
