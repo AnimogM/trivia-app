@@ -1,6 +1,18 @@
-# Frontend - Trivia API
+# Trivia
 
-## Getting Setup
+A trivia app with the following functionalities
+
+1. Display questions - both all questions and by category. Questions should show the question, category, and difficulty rating by default and can show/hide the answer.
+2. Delete questions.
+3. Add questions and require that they include the question and answer text.
+4. Search for questions based on a text query string.
+5. Play the quiz game, randomizing either all questions or within a specific category.
+
+## Frontend
+
+The frontend directory contains a complete React frontend to consume the data from the Flask server.
+
+### Getting Setup
 
 > _tip_: this frontend is designed to work with [Flask-based Backend](../backend) so it will not load successfully if the backend is not working or not connected. We recommend that you **stand up the backend first**, test using Postman or curl, update the endpoints in the frontend, and then the frontend should integrate smoothly.
 
@@ -16,9 +28,7 @@
 npm install
 ```
 
-> _tip_: `npm i`is shorthand for `npm install``
-
-## Required Tasks
+> _tip_: `npm i` is shorthand for `npm install``
 
 ### Running Your Frontend in Dev Mode
 
@@ -30,197 +40,66 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser. T
 npm start
 ```
 
-### Request Formatting
+## Backend
 
-The frontend should be fairly straightforward and disgestible. You'll primarily work within the `components` folder in order to understand, and if you so choose edit, the endpoints utilized by the components. While working on your backend request handling and response formatting, you can reference the frontend to view how it parses the responses.
+The backend directory contains the completed Flask and SQLAlchemy server. The endpionts are defined in **init**.py and references the models.py for DB and SQLAlchemy setup.
 
-After you complete your endpoints, ensure you return to the frontend to confirm your API handles requests and responses appropriately:
+### Setting up the Backend
 
-- Endpoints defined as expected by the frontend
-- Response body provided as expected by the frontend
+### Install Dependencies
 
-### Optional: Updating Endpoints and API behavior
+1. **Python 3.7** - Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
 
-Would you rather the API had different behavior - different endpoints, return the response body in a different format? Go for it! Make the updates to your API and the corresponding updates to the frontend so it works with your API seamlessly.
+2. **Virtual Environment** - We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organized. Instructions for setting up a virual environment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 
-### Optional: Styling
+3. **PIP Dependencies** - Once your virtual environment is setup and running, install the required dependencies by navigating to the `/backend` directory and running:
 
-In addition, you may want to customize and style the frontend by editing the CSS in the `stylesheets` folder.
-
-### Optional: Game Play Mechanics
-
-Currently, when a user plays the game they play up to five questions of the chosen category. If there are fewer than five questions in a category, the game will end when there are no more questions in that category.
-
-You can optionally update this game play to increase the number of questions or whatever other game mechanics you decide. Make sure to specify the new mechanics of the game in the README of the repo you submit so the reviewers are aware that the behavior is correct.
-
-> **Spoiler Alert:** If needed, there are details below regarding the expected endpoints and behavior. But, ONLY look at them if necessary. Give yourself the opportunity to practice understanding code first!
-
----
-
----
-
-## DO NOT PROCEED: ENDPOINT SPOILERS
-
-> Only read the below to confirm your notes regarding the expected API endpoint behavior based on reading the frontend codebase.
-
-### Expected endpoints and behaviors
-
-`GET '/categories'`
-
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs.
-
-```json
-{
-  "categories": {
-    "1": "Science",
-    "2": "Art",
-    "3": "Geography",
-    "4": "History",
-    "5": "Entertainment",
-    "6": "Sports"
-  }
-}
+```bash
+pip install -r requirements.txt
 ```
 
----
+#### Key Pip Dependencies
 
-`GET '/questions?page=${integer}'`
+- [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses.
 
-- Fetches a paginated set of questions, a total number of questions, all categories and current category string.
-- Request Arguments: `page` - integer
-- Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
+- [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use to handle the lightweight SQL database. You'll primarily work in `app.py`and can reference `models.py`.
 
-```json
-{
-  "questions": [
-    {
-      "id": 1,
-      "question": "This is a question",
-      "answer": "This is an answer",
-      "difficulty": 5,
-      "category": 2
-    }
-  ],
-  "totalQuestions": 100,
-  "categories": {
-    "1": "Science",
-    "2": "Art",
-    "3": "Geography",
-    "4": "History",
-    "5": "Entertainment",
-    "6": "Sports"
-  },
-  "currentCategory": "History"
-}
+- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross-origin requests from our frontend server.
+
+### Set up the Database
+
+With Postgres running, create a `trivia` database:
+
+```bash
+createdb trivia
 ```
 
----
+Populate the database using the `trivia.psql` file provided. From the `backend` folder in terminal run:
 
-`GET '/categories/${id}/questions'`
-
-- Fetches questions for a cateogry specified by id request argument
-- Request Arguments: `id` - integer
-- Returns: An object with questions for the specified category, total questions, and current category string
-
-```json
-{
-  "questions": [
-    {
-      "id": 1,
-      "question": "This is a question",
-      "answer": "This is an answer",
-      "difficulty": 5,
-      "category": 4
-    }
-  ],
-  "totalQuestions": 100,
-  "currentCategory": "History"
-}
+```bash
+psql trivia < trivia.psql
 ```
 
----
+### Run the Server
 
-`DELETE '/questions/${id}'`
+From within the `./src` directory first ensure you are working using your created virtual environment.
 
-- Deletes a specified question using the id of the question
-- Request Arguments: `id` - integer
-- Returns: Does not need to return anything besides the appropriate HTTP status code. Optionally can return the id of the question. If you are able to modify the frontend, you can have it remove the question using the id instead of refetching the questions.
+To run the server, execute:
 
----
-
-`POST '/quizzes'`
-
-- Sends a post request in order to get the next question
-- Request Body:
-
-```json
-{
-    'previous_questions': [1, 4, 20, 15]
-    quiz_category': 'current category'
- }
+```bash
+flask run --reload
 ```
 
-- Returns: a single new question object
+The `--reload` flag will detect file changes and restart the server automatically.
 
-```json
-{
-  "question": {
-    "id": 1,
-    "question": "This is a question",
-    "answer": "This is an answer",
-    "difficulty": 5,
-    "category": 4
-  }
-}
-```
 
----
+### Testing
 
-`POST '/questions'`
+To deploy the tests, run
 
-- Sends a post request in order to add a new question
-- Request Body:
-
-```json
-{
-  "question": "Heres a new question string",
-  "answer": "Heres a new answer string",
-  "difficulty": 1,
-  "category": 3
-}
-```
-
-- Returns: Does not return any new data
-
----
-
-`POST '/questions'`
-
-- Sends a post request in order to search for a specific question by search term
-- Request Body:
-
-```json
-{
-  "searchTerm": "this is the term the user is looking for"
-}
-```
-
-- Returns: any array of questions, a number of totalQuestions that met the search term and the current category string
-
-```json
-{
-  "questions": [
-    {
-      "id": 1,
-      "question": "This is a question",
-      "answer": "This is an answer",
-      "difficulty": 5,
-      "category": 5
-    }
-  ],
-  "totalQuestions": 100,
-  "currentCategory": "Entertainment"
-}
+```bash
+dropdb trivia_test
+createdb trivia_test
+psql trivia_test < trivia.psql
+python test_flaskr.py
 ```
